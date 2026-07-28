@@ -33,6 +33,14 @@ cp .env.example .env.local
 npm run dev
 ```
 
+## Deploy (Netlify)
+
+Build command: `npm run build`  
+Publish directory: `dist`  
+Node version: `20`
+
+Config is in `netlify.toml`. After pushing, trigger a new deploy (or wait for auto-deploy).
+
 ## Scripts
 
 | Command | Description |
@@ -42,3 +50,4 @@ npm run dev
 | `npm run preview` | Preview the production build |
 | `npm run lint` | Typecheck with `tsc --noEmit` |
 | `npm run clean` | Remove `dist` and generated `server.js` |
+
