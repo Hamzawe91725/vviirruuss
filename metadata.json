@@ -1,0 +1,6 @@
+{
+  "name": "Virus For Electronics",
+  "description": "Precision Tech Repair & IT Solutions website featuring interactive repair booking, live order tracking, transparent price estimation, and service catalog.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
