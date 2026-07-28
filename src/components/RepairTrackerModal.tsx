@@ -222,7 +222,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
                 <span>{t.tracker.assignedLead} <strong>{activeTicket.assignedTechnician}</strong></span>
               </div>
               <a
-                href="tel:+96265000000"
+                href="tel:+962777772047"
                 className="text-[#4F32CE] font-bold underline hover:text-[#3704b8]"
               >
                 {t.tracker.callLab}

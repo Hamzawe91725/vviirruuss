@@ -113,7 +113,9 @@ export const Footer: React.FC<FooterProps> = ({
             </li>
             <li className="flex items-center gap-3">
               <Phone className="w-5 h-5 text-[#4F32CE] flex-shrink-0" />
-              <span>+962 6 500 0000</span>
+              <a href="tel:+962777772047" className="hover:text-[#4F32CE] transition-colors">
+                {t.footer.phone}
+              </a>
             </li>
             <li className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-[#4F32CE] flex-shrink-0" />

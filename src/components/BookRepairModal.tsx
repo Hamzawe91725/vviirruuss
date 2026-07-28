@@ -10,8 +10,6 @@ interface BookRepairModalProps {
   preselectedServiceId?: string;
 }
 
-type BranchId = 'hq' | 'abdoun' | '7th';
-
 export const BookRepairModal: React.FC<BookRepairModalProps> = ({
   isOpen,
   onClose,
@@ -26,17 +24,10 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [serviceType, setServiceType] = useState<'dropoff' | 'courier'>('dropoff');
-  const [branch, setBranch] = useState<BranchId>('hq');
   const [preferredDate, setPreferredDate] = useState('2026-07-29');
   const [createdTicket, setCreatedTicket] = useState<RepairTicket | null>(null);
 
   if (!isOpen) return null;
-
-  const branchLabels: Record<BranchId, string> = {
-    hq: t.book.branchHq,
-    abdoun: t.book.branchAbdoun,
-    '7th': t.book.branch7th,
-  };
 
   const categories = [
     { id: 'laptop', name: t.book.catLaptop, icon: Laptop, desc: t.book.catLaptopDesc },
@@ -49,7 +40,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
     const newTicketId = `VFE-${randomNum}`;
 
     const method =
-      serviceType === 'courier' ? t.book.noteCourier : branchLabels[branch];
+      serviceType === 'courier' ? t.book.noteCourier : t.book.branchName;
 
     const ticket: RepairTicket = {
       ticketId: newTicketId,
@@ -276,15 +267,9 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                 <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
                   {t.book.branchLabel}
                 </label>
-                <select
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value as BranchId)}
-                  className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
-                >
-                  <option value="hq">{t.book.branchHq}</option>
-                  <option value="abdoun">{t.book.branchAbdoun}</option>
-                  <option value="7th">{t.book.branch7th}</option>
-                </select>
+                <div className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm bg-[#F8F9FA] text-[#191c1d]">
+                  {t.book.branchName}
+                </div>
               </div>
             ) : (
               <div>
