@@ -192,33 +192,13 @@ export const sampleRepairTickets: Record<string, RepairTicket> = {
 
 export const storeLocations: StoreLocation[] = [
   {
-    id: 'amman-main',
-    name: 'Virus Headquarters & Tech Center',
-    address: '123 Technology Park, IT District, Building 4B',
-    city: 'Amman, Jordan',
-    phone: '+962 6 500 0000',
+    id: 'madaba',
+    name: 'Virus For Electronics - Madaba',
+    address: 'Alquds St, 17110',
+    city: 'Madaba, Jordan',
+    phone: '+962 777 772 047',
     hours: 'Sun - Thu: 9:00 AM - 8:00 PM | Sat: 10:00 AM - 6:00 PM',
     isMainBranch: true,
-    mapEmbedUrl: 'https://maps.google.com'
-  },
-  {
-    id: 'abdoun-branch',
-    name: 'Virus Express Care - Abdoun',
-    address: 'Zahran St, Near Circle 5, Plaza Mall Level 1',
-    city: 'Amman, Jordan',
-    phone: '+962 6 500 0001',
-    hours: 'Sun - Sat: 10:00 AM - 10:00 PM',
-    isMainBranch: false,
-    mapEmbedUrl: 'https://maps.google.com'
-  },
-  {
-    id: '7th-circle',
-    name: 'Virus Enterprise & Micro-Lab',
-    address: '7th Circle Commercial Zone, Complex 12',
-    city: 'Amman, Jordan',
-    phone: '+962 6 500 0002',
-    hours: 'Sun - Thu: 8:30 AM - 6:30 PM',
-    isMainBranch: false,
     mapEmbedUrl: 'https://maps.google.com'
   }
 ];
