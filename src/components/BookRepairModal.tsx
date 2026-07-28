@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, Laptop, Smartphone, ArrowRight, Wrench } from 'lucide-react';
 import { RepairTicket } from '../types';
+import { useI18n } from '../i18n/I18nContext';
 
 interface BookRepairModalProps {
   isOpen: boolean;
@@ -9,12 +10,15 @@ interface BookRepairModalProps {
   preselectedServiceId?: string;
 }
 
+type BranchId = 'hq' | 'abdoun' | '7th';
+
 export const BookRepairModal: React.FC<BookRepairModalProps> = ({
   isOpen,
   onClose,
   onTicketCreated,
   preselectedServiceId
 }) => {
+  const { t } = useI18n();
   const [step, setStep] = useState(1);
   const [deviceCategory, setDeviceCategory] = useState(preselectedServiceId || 'laptop');
   const [brandModel, setBrandModel] = useState('');
@@ -22,15 +26,21 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [serviceType, setServiceType] = useState<'dropoff' | 'courier'>('dropoff');
-  const [branch, setBranch] = useState('Amman Headquarters - IT District');
+  const [branch, setBranch] = useState<BranchId>('hq');
   const [preferredDate, setPreferredDate] = useState('2026-07-29');
   const [createdTicket, setCreatedTicket] = useState<RepairTicket | null>(null);
 
   if (!isOpen) return null;
 
+  const branchLabels: Record<BranchId, string> = {
+    hq: t.book.branchHq,
+    abdoun: t.book.branchAbdoun,
+    '7th': t.book.branch7th,
+  };
+
   const categories = [
-    { id: 'laptop', name: 'Laptop / MacBook', icon: Laptop, desc: 'Motherboard, liquid spill, thermal paste, screens' },
-    { id: 'smartphone', name: 'Smartphone / Tablet', icon: Smartphone, desc: 'OLED screen, battery, IC microsoldering' },
+    { id: 'laptop', name: t.book.catLaptop, icon: Laptop, desc: t.book.catLaptopDesc },
+    { id: 'smartphone', name: t.book.catPhone, icon: Smartphone, desc: t.book.catPhoneDesc },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,21 +48,24 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     const newTicketId = `VFE-${randomNum}`;
 
+    const method =
+      serviceType === 'courier' ? t.book.noteCourier : branchLabels[branch];
+
     const ticket: RepairTicket = {
       ticketId: newTicketId,
-      customerName: customerName || 'Valued Client',
-      deviceModel: brandModel || 'Hardware Unit',
-      issueDescription: issue || 'General Hardware Diagnostics & Repair',
+      customerName: customerName || t.book.defaultClient,
+      deviceModel: brandModel || t.book.defaultDevice,
+      issueDescription: issue || t.book.defaultIssue,
       status: 'Diagnostic',
       progressPercentage: 20,
       receivedDate: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      estimatedCompletion: 'Within 24-48 Hours',
-      assignedTechnician: 'Eng. Rami Saleh (Senior Repair Specialist)',
+      estimatedCompletion: t.book.eta,
+      assignedTechnician: t.book.techName,
       technicianNotes: [
-        `Ticket created via Online Booking Portal for ${serviceType === 'courier' ? 'Express Courier Pickup' : branch}.`,
-        'Initial intake diagnostic scheduled upon device arrival.'
+        t.book.noteCreated.replace('{method}', method),
+        t.book.noteIntake,
       ],
-      replacedComponents: ['Pending Diagnostic Assessment'],
+      replacedComponents: [t.book.pendingParts],
       costEstimate: deviceCategory === 'smartphone' ? '$45 - $85' : deviceCategory === 'laptop' ? '$65 - $130' : '$120 - $250'
     };
 
@@ -67,7 +80,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
+          className="absolute top-4 end-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
         >
           <X className="w-5 h-5" />
         </button>
@@ -76,10 +89,10 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
         {step < 4 && (
           <div className="mb-6">
             <span className="font-mono-label text-xs text-[#4F32CE] uppercase tracking-wider font-bold">
-              Online Repair Booking Portal
+              {t.book.eyebrow}
             </span>
             <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#191c1d]">
-              Book Your Technical Service
+              {t.book.title}
             </h2>
             <div className="flex items-center gap-2 mt-4">
               {[1, 2, 3].map((s) => (
@@ -98,7 +111,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
         {step === 1 && (
           <div className="space-y-4">
             <p className="font-mono-label text-xs text-[#474555] uppercase font-semibold">
-              Step 1: Select Your Hardware Category
+              {t.book.step1}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {categories.map((cat) => {
@@ -109,7 +122,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                     key={cat.id}
                     type="button"
                     onClick={() => setDeviceCategory(cat.id)}
-                    className={`p-4 border rounded-lg text-left transition-all flex items-start gap-3 ${
+                    className={`p-4 border rounded-lg text-start transition-all flex items-start gap-3 ${
                       isSelected
                         ? 'border-[#4F32CE] bg-[#4F32CE]/5 ring-1 ring-[#4F32CE]'
                         : 'border-[#edeeef] hover:border-[#4F32CE]/50 bg-white'
@@ -130,8 +143,8 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                 onClick={() => setStep(2)}
                 className="bg-[#4F32CE] text-white px-6 py-3 font-mono-label text-sm font-semibold rounded-lg hover:bg-[#3704b8] flex items-center gap-2"
               >
-                Next Step
-                <ArrowRight className="w-4 h-4" />
+                {t.common.nextStep}
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
               </button>
             </div>
           </div>
@@ -141,16 +154,16 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
         {step === 2 && (
           <div className="space-y-4">
             <p className="font-mono-label text-xs text-[#474555] uppercase font-semibold">
-              Step 2: Device Model & Fault Description
+              {t.book.step2}
             </p>
 
             <div>
               <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                Brand & Exact Model
+                {t.book.brandLabel}
               </label>
               <input
                 type="text"
-                placeholder="e.g. MacBook Pro 16 M2 / iPhone 15 Pro / Dell XPS 15"
+                placeholder={t.book.brandPlaceholder}
                 value={brandModel}
                 onChange={(e) => setBrandModel(e.target.value)}
                 className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE] focus:ring-1 focus:ring-[#4F32CE]"
@@ -160,11 +173,11 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
 
             <div>
               <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                Describe the Issue / Fault
+                {t.book.issueLabel}
               </label>
               <textarea
                 rows={3}
-                placeholder="e.g. Liquid spill on keyboard, device turns off under load, cracked front OLED display, thermal overheating noise..."
+                placeholder={t.book.issuePlaceholder}
                 value={issue}
                 onChange={(e) => setIssue(e.target.value)}
                 className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE] focus:ring-1 focus:ring-[#4F32CE]"
@@ -177,15 +190,15 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                 onClick={() => setStep(1)}
                 className="px-4 py-2 text-sm font-mono-label text-[#474555] hover:text-[#191c1d]"
               >
-                Back
+                {t.common.back}
               </button>
               <button
                 onClick={() => setStep(3)}
                 disabled={!brandModel}
                 className="bg-[#4F32CE] text-white px-6 py-3 font-mono-label text-sm font-semibold rounded-lg hover:bg-[#3704b8] disabled:opacity-50 flex items-center gap-2"
               >
-                Next Step
-                <ArrowRight className="w-4 h-4" />
+                {t.common.nextStep}
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
               </button>
             </div>
           </div>
@@ -195,17 +208,17 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
         {step === 3 && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <p className="font-mono-label text-xs text-[#474555] uppercase font-semibold">
-              Step 3: Contact Information & Logistics
+              {t.book.step3}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                  Your Full Name
+                  {t.book.nameLabel}
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Layla Mansour"
+                  placeholder={t.book.namePlaceholder}
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
@@ -215,11 +228,11 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
 
               <div>
                 <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                  Mobile Phone Number
+                  {t.book.phoneLabel}
                 </label>
                 <input
                   type="tel"
-                  placeholder="+962 7 9000 0000"
+                  placeholder={t.book.phonePlaceholder}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
@@ -230,7 +243,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
 
             <div>
               <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                Service Logistics
+                {t.book.logistics}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -242,7 +255,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                       : 'border-[#edeeef] text-[#474555]'
                   }`}
                 >
-                  Store Drop-off
+                  {t.book.dropoff}
                 </button>
                 <button
                   type="button"
@@ -253,7 +266,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                       : 'border-[#edeeef] text-[#474555]'
                   }`}
                 >
-                  Express Courier Pick-up
+                  {t.book.courier}
                 </button>
               </div>
             </div>
@@ -261,22 +274,22 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
             {serviceType === 'dropoff' ? (
               <div>
                 <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                  Preferred Branch
+                  {t.book.branchLabel}
                 </label>
                 <select
                   value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
+                  onChange={(e) => setBranch(e.target.value as BranchId)}
                   className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
                 >
-                  <option value="Amman Headquarters - IT District">Amman Headquarters - IT District</option>
-                  <option value="Virus Express Care - Abdoun Mall">Virus Express Care - Abdoun Mall</option>
-                  <option value="Virus Micro-Lab - 7th Circle">Virus Micro-Lab - 7th Circle</option>
+                  <option value="hq">{t.book.branchHq}</option>
+                  <option value="abdoun">{t.book.branchAbdoun}</option>
+                  <option value="7th">{t.book.branch7th}</option>
                 </select>
               </div>
             ) : (
               <div>
                 <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                  Preferred Courier Date
+                  {t.book.courierDate}
                 </label>
                 <input
                   type="date"
@@ -293,13 +306,13 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                 onClick={() => setStep(2)}
                 className="px-4 py-2 text-sm font-mono-label text-[#474555]"
               >
-                Back
+                {t.common.back}
               </button>
               <button
                 type="submit"
                 className="bg-[#4F32CE] text-white px-8 py-3 font-mono-label text-sm font-bold rounded-lg hover:bg-[#3704b8] flex items-center gap-2 shadow-md"
               >
-                Confirm & Generate Ticket
+                {t.book.confirm}
                 <Wrench className="w-4 h-4" />
               </button>
             </div>
@@ -315,32 +328,32 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
 
             <div>
               <span className="font-mono-label text-xs text-[#00B894] font-bold uppercase tracking-wider">
-                Repair Order Confirmed
+                {t.book.confirmed}
               </span>
               <h3 className="font-heading text-2xl font-bold text-[#191c1d] mt-1">
-                Your Ticket ID: <span className="text-[#4F32CE]">{createdTicket.ticketId}</span>
+                {t.book.ticketIdLabel} <span className="text-[#4F32CE]">{createdTicket.ticketId}</span>
               </h3>
               <p className="font-sans text-sm text-[#474555] mt-2 max-w-md mx-auto">
-                We have registered your hardware booking in our lab system. Save this Ticket ID to track your live repair progress anytime!
+                {t.book.confirmedBody}
               </p>
             </div>
 
             {/* Ticket Card Details */}
-            <div className="bg-[#F8F9FA] p-5 rounded-lg border border-[#e1e3e4] text-left font-mono-label text-xs space-y-2">
+            <div className="bg-[#F8F9FA] p-5 rounded-lg border border-[#e1e3e4] text-start font-mono-label text-xs space-y-2">
               <div className="flex justify-between">
-                <span className="text-[#474555]">Client Name:</span>
+                <span className="text-[#474555]">{t.book.clientName}</span>
                 <span className="font-bold text-[#191c1d]">{createdTicket.customerName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#474555]">Device Model:</span>
+                <span className="text-[#474555]">{t.book.deviceModel}</span>
                 <span className="font-bold text-[#191c1d]">{createdTicket.deviceModel}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#474555]">Estimated Price:</span>
+                <span className="text-[#474555]">{t.book.estimatedPrice}</span>
                 <span className="font-bold text-[#4F32CE]">{createdTicket.costEstimate}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#474555]">Assigned Tech:</span>
+                <span className="text-[#474555]">{t.book.assignedTech}</span>
                 <span className="font-semibold text-[#191c1d]">{createdTicket.assignedTechnician}</span>
               </div>
             </div>
@@ -350,7 +363,7 @@ export const BookRepairModal: React.FC<BookRepairModalProps> = ({
                 onClick={onClose}
                 className="w-full bg-[#4F32CE] text-white py-3 rounded-lg font-mono-label text-sm font-bold hover:bg-[#3704b8]"
               >
-                Done
+                {t.common.done}
               </button>
             </div>
           </div>

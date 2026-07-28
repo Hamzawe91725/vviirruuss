@@ -1,6 +1,7 @@
 import React from 'react';
 import { ServiceItem } from '../types';
 import { X, Check, Wrench, Clock, DollarSign, ShieldCheck, Cpu } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
 
 interface ServiceDetailModalProps {
   service: ServiceItem | null;
@@ -13,6 +14,8 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
   onClose,
   onBookNow
 }) => {
+  const { t } = useI18n();
+
   if (!service) return null;
 
   return (
@@ -21,7 +24,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA] z-10"
+          className="absolute top-4 end-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA] z-10"
         >
           <X className="w-5 h-5" />
         </button>
@@ -34,15 +37,15 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-3 right-3 bg-black/75 text-white px-3 py-1 rounded font-mono-label text-xs font-bold backdrop-blur-xs">
-            Starts at {service.startingPrice}
+          <div className="absolute top-3 end-3 bg-black/75 text-white px-3 py-1 rounded font-mono-label text-xs font-bold backdrop-blur-xs">
+            {t.serviceDetail.startsAt} {service.startingPrice}
           </div>
         </div>
 
         {/* Service Header */}
         <div className="mb-6">
           <span className="font-mono-label text-xs text-[#4F32CE] uppercase tracking-wider font-bold">
-            Service Deep Dive
+            {t.serviceDetail.deepDive}
           </span>
           <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#191c1d] mt-1">
             {service.title}
@@ -55,7 +58,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
         {/* Key Specifications Grid */}
         <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-[#F8F9FA] rounded-lg border border-[#e1e3e4] font-mono-label text-xs">
           <div>
-            <span className="text-[#787586] block text-[10px] uppercase">Turnaround Time</span>
+            <span className="text-[#787586] block text-[10px] uppercase">{t.serviceDetail.turnaround}</span>
             <span className="font-bold text-[#191c1d] flex items-center gap-1.5 mt-0.5">
               <Clock className="w-3.5 h-3.5 text-[#4F32CE]" />
               {service.turnaround}
@@ -63,10 +66,10 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
           </div>
 
           <div>
-            <span className="text-[#787586] block text-[10px] uppercase">Warranty Standard</span>
+            <span className="text-[#787586] block text-[10px] uppercase">{t.serviceDetail.warranty}</span>
             <span className="font-bold text-[#00B894] flex items-center gap-1.5 mt-0.5">
               <ShieldCheck className="w-3.5 h-3.5" />
-              12 Months Full Cover
+              {t.serviceDetail.warrantyValue}
             </span>
           </div>
         </div>
@@ -75,7 +78,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
         <div className="space-y-4 mb-8">
           <div>
             <h4 className="font-mono-label text-xs font-bold text-[#191c1d] uppercase mb-2">
-              What Is Included In This Service
+              {t.serviceDetail.included}
             </h4>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {service.features.map((feat, idx) => (
@@ -89,7 +92,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
 
           <div>
             <h4 className="font-mono-label text-xs font-bold text-[#191c1d] uppercase mb-2">
-              Precision Equipment Used
+              {t.serviceDetail.equipment}
             </h4>
             <div className="flex flex-wrap gap-2">
               {service.toolsUsed.map((tool, idx) => (
@@ -107,7 +110,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 font-mono-label text-xs text-[#474555] hover:text-[#191c1d]"
           >
-            Close
+            {t.common.close}
           </button>
           
           <button
@@ -118,7 +121,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
             className="bg-[#4F32CE] text-white px-8 py-3 font-mono-label text-sm font-bold rounded-lg hover:bg-[#3704b8] transition-colors shadow-md flex items-center gap-2"
           >
             <Wrench className="w-4 h-4" />
-            Book This Service
+            {t.serviceDetail.bookThis}
           </button>
         </div>
       </div>

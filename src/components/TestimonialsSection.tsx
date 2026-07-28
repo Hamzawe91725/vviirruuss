@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
-import { testimonialsData } from '../data/mockData';
 import { Quote, ArrowLeft, ArrowRight, Star } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
+import { useLocalizedTestimonials } from '../i18n/useLocalizedContent';
 
 export const TestimonialsSection: React.FC = () => {
+  const { t } = useI18n();
+  const testimonials = useLocalizedTestimonials();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? testimonialsData.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === testimonialsData.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
 
   return (
     <section className="py-16 md:py-24 bg-[#F8F9FA]" id="testimonials">
       <div className="px-4 sm:px-8 md:px-12 max-w-[1280px] mx-auto">
-        {/* Header with Navigation */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-4">
           <div>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-[#191c1d] tracking-tight">
-              Trusted by Professionals
+              {t.testimonials.title}
             </h2>
             <p className="font-sans text-sm sm:text-base text-[#474555] mt-1">
-              Read real client reviews from enterprise teams & individual tech owners.
+              {t.testimonials.subtitle}
             </p>
           </div>
 
@@ -31,23 +33,22 @@ export const TestimonialsSection: React.FC = () => {
             <button
               onClick={handlePrev}
               className="w-12 h-12 rounded-full border border-[#c9c4d7] bg-white flex items-center justify-center hover:bg-[#4F32CE] hover:text-white hover:border-[#4F32CE] transition-all shadow-2xs"
-              aria-label="Previous testimonial"
+              aria-label={t.testimonials.prev}
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
             </button>
             <button
               onClick={handleNext}
               className="w-12 h-12 rounded-full border border-[#c9c4d7] bg-white flex items-center justify-center hover:bg-[#4F32CE] hover:text-white hover:border-[#4F32CE] transition-all shadow-2xs"
-              aria-label="Next testimonial"
+              aria-label={t.testimonials.next}
             >
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 rtl:rotate-180" />
             </button>
           </div>
         </div>
 
-        {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {testimonialsData.map((item, idx) => (
+          {testimonials.map((item, idx) => (
             <div
               key={item.id}
               className={`bg-white p-8 sm:p-10 border border-[#edeeef] rounded-xl flex flex-col justify-between shadow-2xs hover:shadow-md transition-shadow ${

@@ -14,6 +14,16 @@
   .font-mono-label {
     font-family: 'JetBrains Mono', monospace;
   }
+
+  body.font-ar,
+  body.font-ar .font-heading,
+  body.font-ar .font-sans {
+    font-family: 'Cairo', 'Inter', sans-serif;
+  }
+
+  body.font-ar .font-mono-label {
+    font-family: 'Cairo', 'JetBrains Mono', sans-serif;
+  }
 }
 
 /* Custom design tokens and utilities matching Virus For Electronics specs */

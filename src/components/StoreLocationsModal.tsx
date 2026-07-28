@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, MapPin, Phone, Clock, Navigation, Check } from 'lucide-react';
-import { storeLocations } from '../data/mockData';
+import { useI18n } from '../i18n/I18nContext';
+import { useLocalizedStores } from '../i18n/useLocalizedContent';
 
 interface StoreLocationsModalProps {
   isOpen: boolean;
@@ -13,6 +14,9 @@ export const StoreLocationsModal: React.FC<StoreLocationsModalProps> = ({
   onClose,
   onBookRepair
 }) => {
+  const { t } = useI18n();
+  const stores = useLocalizedStores();
+
   if (!isOpen) return null;
 
   return (
@@ -21,7 +25,7 @@ export const StoreLocationsModal: React.FC<StoreLocationsModalProps> = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
+          className="absolute top-4 end-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
         >
           <X className="w-5 h-5" />
         </button>
@@ -30,19 +34,19 @@ export const StoreLocationsModal: React.FC<StoreLocationsModalProps> = ({
         <div className="mb-6">
           <span className="font-mono-label text-xs text-[#4F32CE] uppercase tracking-wider font-bold flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5" />
-            Amman Technical Centers
+            {t.locations.eyebrow}
           </span>
           <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#191c1d]">
-            Store Locations & Operating Hours
+            {t.locations.title}
           </h2>
           <p className="font-sans text-xs sm:text-sm text-[#474555] mt-1">
-            Visit any of our authorized micro-labs for immediate walk-in diagnostics or courier drop-offs.
+            {t.locations.subtitle}
           </p>
         </div>
 
         {/* Store Cards */}
         <div className="space-y-4 mb-6">
-          {storeLocations.map((loc) => (
+          {stores.map((loc) => (
             <div
               key={loc.id}
               className={`p-5 rounded-xl border transition-all ${
@@ -58,7 +62,7 @@ export const StoreLocationsModal: React.FC<StoreLocationsModalProps> = ({
                   </h3>
                   {loc.isMainBranch && (
                     <span className="bg-[#4F32CE] text-white px-2 py-0.5 rounded text-[10px] font-mono-label font-bold uppercase">
-                      Main Lab & Headquarter
+                      {t.locations.mainBadge}
                     </span>
                   )}
                 </div>
@@ -90,7 +94,7 @@ export const StoreLocationsModal: React.FC<StoreLocationsModalProps> = ({
         {/* Action Bar */}
         <div className="pt-4 border-t border-[#edeeef] flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="font-mono-label text-xs text-[#474555]">
-            Need courier pickup from your home or office?
+            {t.locations.courierPrompt}
           </p>
 
           <button
@@ -100,7 +104,7 @@ export const StoreLocationsModal: React.FC<StoreLocationsModalProps> = ({
             }}
             className="w-full sm:w-auto bg-[#4F32CE] text-white px-6 py-2.5 font-mono-label text-xs font-bold rounded-lg hover:bg-[#3704b8] shadow-sm"
           >
-            Schedule Pick-up Online
+            {t.locations.schedulePickup}
           </button>
         </div>
       </div>

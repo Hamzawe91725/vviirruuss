@@ -15,11 +15,16 @@ import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { StoreLocationsModal } from './components/StoreLocationsModal';
 import { ProcessModal } from './components/ProcessModal';
 
-import { servicesData, sampleRepairTickets } from './data/mockData';
+import { sampleRepairTickets } from './data/mockData';
 import { ServiceItem, RepairTicket } from './types';
 import { ArrowUp } from 'lucide-react';
+import { useI18n } from './i18n/I18nContext';
+import { useLocalizedServices } from './i18n/useLocalizedContent';
 
 export default function App() {
+  const { t } = useI18n();
+  const servicesData = useLocalizedServices();
+
   // Modal Visibility States
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
@@ -122,10 +127,10 @@ export default function App() {
       {/* Floating Back To Top Button */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-6 right-6 w-12 h-12 bg-[#4F32CE] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-40 hover:bg-[#3704b8] active:scale-95 ${
+        className={`fixed bottom-6 end-6 w-12 h-12 bg-[#4F32CE] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-40 hover:bg-[#3704b8] active:scale-95 ${
           showBackToTop ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
-        aria-label="Scroll back to top"
+        aria-label={t.common.backToTop}
       >
         <ArrowUp className="w-5 h-5" />
       </button>

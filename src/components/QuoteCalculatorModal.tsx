@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Calculator, ShieldCheck, Zap, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
 
 interface QuoteCalculatorModalProps {
   isOpen: boolean;
@@ -7,15 +8,19 @@ interface QuoteCalculatorModalProps {
   onBookWithQuote: (preselectedCategory: string) => void;
 }
 
+type BrandKey = 'apple' | 'samsung' | 'dell' | 'lenovo' | 'hp' | 'enterprise';
+type UrgencyKey = 'standard' | 'express' | 'emergency';
+
 export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
   isOpen,
   onClose,
   onBookWithQuote
 }) => {
+  const { t } = useI18n();
   const [deviceType, setDeviceType] = useState('laptop');
-  const [brand, setBrand] = useState('Apple (MacBook)');
+  const [brand, setBrand] = useState<BrandKey>('apple');
   const [issue, setIssue] = useState('liquid');
-  const [urgency, setUrgency] = useState<'standard' | 'express' | 'emergency'>('standard');
+  const [urgency, setUrgency] = useState<UrgencyKey>('standard');
   const [extendedWarranty, setExtendedWarranty] = useState(false);
 
   if (!isOpen) return null;
@@ -56,7 +61,7 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
+          className="absolute top-4 end-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
         >
           <X className="w-5 h-5" />
         </button>
@@ -65,13 +70,13 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
         <div className="mb-6">
           <span className="font-mono-label text-xs text-[#4F32CE] uppercase tracking-wider font-bold flex items-center gap-1">
             <Calculator className="w-3.5 h-3.5" />
-            Transparent Pricing Estimator
+            {t.quote.eyebrow}
           </span>
           <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#191c1d]">
-            Instant Repair Quote Calculator
+            {t.quote.title}
           </h2>
           <p className="font-sans text-xs sm:text-sm text-[#474555] mt-1">
-            Select your hardware specifications to calculate a real-time diagnostic and repair estimate.
+            {t.quote.subtitle}
           </p>
         </div>
 
@@ -80,36 +85,36 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                Hardware Category
+                {t.quote.category}
               </label>
               <select
                 value={deviceType}
                 onChange={(e) => setDeviceType(e.target.value)}
                 className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
               >
-                <option value="laptop">Laptop / MacBook</option>
-                <option value="smartphone">Smartphone / Tablet</option>
-                <option value="desktop">PC Workstation / Rig</option>
-                <option value="server">Server / Network Hardware</option>
-                <option value="data">Cleanroom Data Recovery</option>
+                <option value="laptop">{t.quote.devices.laptop}</option>
+                <option value="smartphone">{t.quote.devices.smartphone}</option>
+                <option value="desktop">{t.quote.devices.desktop}</option>
+                <option value="server">{t.quote.devices.server}</option>
+                <option value="data">{t.quote.devices.data}</option>
               </select>
             </div>
 
             <div>
               <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                Manufacturer / Brand
+                {t.quote.brand}
               </label>
               <select
                 value={brand}
-                onChange={(e) => setBrand(e.target.value)}
+                onChange={(e) => setBrand(e.target.value as BrandKey)}
                 className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
               >
-                <option value="Apple (MacBook / iPhone)">Apple (MacBook / iPhone)</option>
-                <option value="Samsung Galaxy / Book">Samsung Galaxy / Book</option>
-                <option value="Dell / Alienware">Dell / Alienware</option>
-                <option value="Lenovo ThinkPad / Legion">Lenovo ThinkPad / Legion</option>
-                <option value="HP / Asus ROG">HP / ASUS ROG / Razer</option>
-                <option value="Enterprise / Custom">Enterprise / Custom Hardware</option>
+                <option value="apple">{t.quote.brands.apple}</option>
+                <option value="samsung">{t.quote.brands.samsung}</option>
+                <option value="dell">{t.quote.brands.dell}</option>
+                <option value="lenovo">{t.quote.brands.lenovo}</option>
+                <option value="hp">{t.quote.brands.hp}</option>
+                <option value="enterprise">{t.quote.brands.enterprise}</option>
               </select>
             </div>
           </div>
@@ -117,34 +122,34 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                Primary Issue / Service Needed
+                {t.quote.issue}
               </label>
               <select
                 value={issue}
                 onChange={(e) => setIssue(e.target.value)}
                 className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
               >
-                <option value="liquid">Liquid Spill & Corrosion Cleaning</option>
-                <option value="soldering">Micro-soldering IC & Logic Board</option>
-                <option value="screen">Screen / OLED Display Swap</option>
-                <option value="thermal">Thermal Overhaul & Fan Noise</option>
-                <option value="battery">Battery Health & Power Delivery</option>
-                <option value="nand">NAND Flash / Corrupted SSD Recovery</option>
+                <option value="liquid">{t.quote.issues.liquid}</option>
+                <option value="soldering">{t.quote.issues.soldering}</option>
+                <option value="screen">{t.quote.issues.screen}</option>
+                <option value="thermal">{t.quote.issues.thermal}</option>
+                <option value="battery">{t.quote.issues.battery}</option>
+                <option value="nand">{t.quote.issues.nand}</option>
               </select>
             </div>
 
             <div>
               <label className="block font-mono-label text-xs font-bold text-[#191c1d] mb-1 uppercase">
-                Turnaround Urgency
+                {t.quote.urgency}
               </label>
               <select
                 value={urgency}
-                onChange={(e) => setUrgency(e.target.value as any)}
+                onChange={(e) => setUrgency(e.target.value as UrgencyKey)}
                 className="w-full px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm focus:outline-none focus:border-[#4F32CE]"
               >
-                <option value="standard">Standard (48 Hours)</option>
-                <option value="express">Express Priority (24 Hours) +25%</option>
-                <option value="emergency">Same-Day Emergency (4 Hours) +50%</option>
+                <option value="standard">{t.quote.urgencyOptions.standard}</option>
+                <option value="express">{t.quote.urgencyOptions.express}</option>
+                <option value="emergency">{t.quote.urgencyOptions.emergency}</option>
               </select>
             </div>
           </div>
@@ -152,10 +157,10 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
           <div className="p-4 bg-[#F8F9FA] rounded-lg border border-[#e1e3e4] flex items-center justify-between">
             <div>
               <p className="font-mono-label text-xs font-bold text-[#191c1d]">
-                Extend Warranty to 24 Months (+ $25)
+                {t.quote.extendWarranty}
               </p>
               <p className="font-sans text-xs text-[#474555]">
-                Includes complimentary biannual thermal maintenance cleanings.
+                {t.quote.extendHint}
               </p>
             </div>
             <input
@@ -170,7 +175,7 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
           <div className="bg-[#23232D] text-white p-6 rounded-xl border border-[#4F32CE]/30 space-y-4 shadow-lg">
             <div className="flex justify-between items-center border-b border-white/10 pb-3">
               <span className="font-mono-label text-xs text-[#e1e3e4] uppercase">
-                Estimated Price Range
+                {t.quote.estimatedRange}
               </span>
               <span className="font-heading text-2xl sm:text-3xl font-extrabold text-[#FFC107]">
                 ${estimatedMin} - ${estimatedMax}
@@ -178,10 +183,10 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
             </div>
 
             <div className="grid grid-cols-2 gap-2 font-mono-label text-xs text-[#e1e3e4]">
-              <div>• Initial Diagnostic Fee: <span className="text-white font-bold">$0 (Waived)</span></div>
-              <div>• Parts Grade: <span className="text-white font-bold">OEM Standard</span></div>
-              <div>• Turnaround: <span className="text-white font-bold">{urgency.toUpperCase()}</span></div>
-              <div>• Warranty: <span className="text-[#00B894] font-bold">{extendedWarranty ? '24 Months' : '12 Months'}</span></div>
+              <div>{t.quote.diagnosticFee} <span className="text-white font-bold">{t.quote.diagnosticWaived}</span></div>
+              <div>{t.quote.partsGrade} <span className="text-white font-bold">{t.quote.oem}</span></div>
+              <div>{t.quote.turnaroundLabel} <span className="text-white font-bold">{urgency.toUpperCase()}</span></div>
+              <div>{t.quote.warrantyLabel} <span className="text-[#00B894] font-bold">{extendedWarranty ? t.quote.months24 : t.quote.months12}</span></div>
             </div>
 
             <button
@@ -191,8 +196,8 @@ export const QuoteCalculatorModal: React.FC<QuoteCalculatorModalProps> = ({
               }}
               className="w-full bg-[#4F32CE] hover:bg-[#3704b8] text-white py-3.5 rounded-lg font-mono-label text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2"
             >
-              Book Repair With This Quote
-              <ArrowRight className="w-4 h-4" />
+              {t.quote.bookWithQuote}
+              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
             </button>
           </div>
         </div>

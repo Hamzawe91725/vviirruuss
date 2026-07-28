@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Search, CheckCircle2, Clock, AlertCircle, Wrench, Shield, Phone } from 'lucide-react';
 import { RepairTicket } from '../types';
+import { useI18n } from '../i18n/I18nContext';
 
 interface RepairTrackerModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
   onClose,
   tickets
 }) => {
+  const { t } = useI18n();
   const [searchId, setSearchId] = useState('VFE-8921');
   const [selectedTicketId, setSelectedTicketId] = useState('VFE-8921');
 
@@ -26,16 +28,23 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
     if (tickets[cleanQuery]) {
       setSelectedTicketId(cleanQuery);
     } else {
-      alert(`Ticket ID "${cleanQuery}" not found. Try one of the sample tickets: VFE-8921, VFE-9042, VFE-7110`);
+      alert(t.tracker.notFound.replace('{id}', cleanQuery));
     }
   };
 
   const steps = [
-    { title: 'Intake & Diagnostic', status: 'Diagnostic' },
-    { title: 'Micro-soldering / Parts', status: 'Microsoldering' },
-    { title: 'Thermal & Stress Test', status: 'Testing' },
-    { title: 'Ready for Pickup', status: 'Ready' }
+    { title: t.tracker.steps.diagnostic, status: 'Diagnostic' },
+    { title: t.tracker.steps.microsoldering, status: 'Microsoldering' },
+    { title: t.tracker.steps.testing, status: 'Testing' },
+    { title: t.tracker.steps.ready, status: 'Ready' }
   ];
+
+  const statusPhaseLabel: Record<string, string> = {
+    Diagnostic: t.tracker.steps.diagnostic,
+    Microsoldering: t.tracker.steps.microsoldering,
+    Testing: t.tracker.steps.testing,
+    Ready: t.tracker.steps.ready,
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
@@ -43,7 +52,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
+          className="absolute top-4 end-4 text-[#474555] hover:text-[#191c1d] p-2 rounded-full hover:bg-[#F8F9FA]"
         >
           <X className="w-5 h-5" />
         </button>
@@ -51,10 +60,10 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
         {/* Modal Header */}
         <div className="mb-6">
           <span className="font-mono-label text-xs text-[#4F32CE] uppercase tracking-wider font-bold">
-            Live Diagnostics & Repair Status
+            {t.tracker.eyebrow}
           </span>
           <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#191c1d]">
-            Track Your Repair Ticket
+            {t.tracker.title}
           </h2>
         </div>
 
@@ -63,7 +72,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
           <form onSubmit={handleSearch} className="flex gap-2">
             <input
               type="text"
-              placeholder="Enter Ticket ID (e.g. VFE-8921)..."
+              placeholder={t.tracker.placeholder}
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
               className="flex-1 px-4 py-2.5 border border-[#c9c4d7] rounded-lg text-sm font-mono-label font-bold text-[#191c1d] focus:outline-none focus:border-[#4F32CE]"
@@ -73,12 +82,12 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
               className="bg-[#4F32CE] text-white px-5 py-2.5 rounded-lg font-mono-label text-sm font-bold hover:bg-[#3704b8] flex items-center gap-1.5"
             >
               <Search className="w-4 h-4" />
-              Lookup
+              {t.tracker.lookup}
             </button>
           </form>
 
           <div className="flex items-center gap-2 flex-wrap text-xs font-mono-label text-[#474555]">
-            <span>Sample Tickets:</span>
+            <span>{t.tracker.sampleTickets}</span>
             {Object.keys(tickets).map((id) => (
               <button
                 key={id}
@@ -105,27 +114,27 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
             <div className="bg-[#23232D] text-white p-6 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-md">
               <div>
                 <span className="font-mono-label text-xs text-[#FFC107] uppercase font-bold tracking-wider">
-                  Ticket #{activeTicket.ticketId} • {activeTicket.customerName}
+                  {t.tracker.ticketPrefix}{activeTicket.ticketId} • {activeTicket.customerName}
                 </span>
                 <h3 className="font-heading text-xl font-bold text-white mt-1">
                   {activeTicket.deviceModel}
                 </h3>
                 <p className="font-sans text-xs text-[#e1e3e4] mt-1">
-                  Issue: {activeTicket.issueDescription}
+                  {t.tracker.issuePrefix} {activeTicket.issueDescription}
                 </p>
               </div>
 
-              <div className="bg-[#4F32CE] px-4 py-2 rounded-lg text-right font-mono-label text-xs font-bold text-white flex-shrink-0">
-                <span className="block text-[#c7beff] text-[10px] uppercase">Current Phase</span>
-                {activeTicket.status}
+              <div className="bg-[#4F32CE] px-4 py-2 rounded-lg text-end font-mono-label text-xs font-bold text-white flex-shrink-0">
+                <span className="block text-[#c7beff] text-[10px] uppercase">{t.tracker.currentPhase}</span>
+                {statusPhaseLabel[activeTicket.status] ?? activeTicket.status}
               </div>
             </div>
 
             {/* Pipeline Stage Visualization */}
             <div>
               <div className="flex justify-between items-center mb-2 font-mono-label text-xs font-bold text-[#191c1d]">
-                <span>Progress: {activeTicket.progressPercentage}%</span>
-                <span className="text-[#4F32CE]">Est. Finish: {activeTicket.estimatedCompletion}</span>
+                <span>{t.tracker.progress} {activeTicket.progressPercentage}%</span>
+                <span className="text-[#4F32CE]">{t.tracker.estFinish} {activeTicket.estimatedCompletion}</span>
               </div>
 
               <div className="w-full bg-[#edeeef] h-3 rounded-full overflow-hidden mb-6">
@@ -158,7 +167,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
                         ) : (
                           <Clock className="w-3.5 h-3.5 text-[#787586]" />
                         )}
-                        <span>Phase 0{i + 1}</span>
+                        <span>{t.tracker.phase} 0{i + 1}</span>
                       </div>
                       <p className="text-[11px] font-sans">{st.title}</p>
                     </div>
@@ -172,7 +181,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
               <div className="bg-[#F8F9FA] p-5 rounded-lg border border-[#edeeef]">
                 <h4 className="font-mono-label text-xs font-bold text-[#191c1d] uppercase mb-3 flex items-center gap-1.5">
                   <Wrench className="w-4 h-4 text-[#4F32CE]" />
-                  Technician Diagnostics Log
+                  {t.tracker.techLog}
                 </h4>
                 <ul className="space-y-2 font-sans text-xs text-[#474555]">
                   {activeTicket.technicianNotes.map((note, idx) => (
@@ -188,7 +197,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
                 <div>
                   <h4 className="font-mono-label text-xs font-bold text-[#191c1d] uppercase mb-3 flex items-center gap-1.5">
                     <Shield className="w-4 h-4 text-[#00B894]" />
-                    Replaced Hardware Components
+                    {t.tracker.replacedParts}
                   </h4>
                   <ul className="space-y-1.5 font-sans text-xs text-[#474555] mb-4">
                     {activeTicket.replacedComponents.map((comp, idx) => (
@@ -200,7 +209,7 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
                 </div>
 
                 <div className="pt-3 border-t border-[#e1e3e4] flex items-center justify-between font-mono-label text-xs">
-                  <span className="text-[#474555]">Estimate Cost:</span>
+                  <span className="text-[#474555]">{t.tracker.estimateCost}</span>
                   <span className="font-extrabold text-[#4F32CE] text-sm">{activeTicket.costEstimate}</span>
                 </div>
               </div>
@@ -210,20 +219,20 @@ export const RepairTrackerModal: React.FC<RepairTrackerModalProps> = ({
             <div className="bg-[#4F32CE]/5 p-4 rounded-lg border border-[#4F32CE]/20 flex items-center justify-between text-xs font-mono-label text-[#474555]">
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#4F32CE]" />
-                <span>Assigned Lead: <strong>{activeTicket.assignedTechnician}</strong></span>
+                <span>{t.tracker.assignedLead} <strong>{activeTicket.assignedTechnician}</strong></span>
               </div>
               <a
                 href="tel:+96265000000"
                 className="text-[#4F32CE] font-bold underline hover:text-[#3704b8]"
               >
-                Call Lab Direct
+                {t.tracker.callLab}
               </a>
             </div>
           </div>
         ) : (
           <div className="text-center py-12 text-[#474555]">
             <AlertCircle className="w-12 h-12 text-[#4F32CE] mx-auto mb-3" />
-            <p className="font-mono-label text-sm font-bold">Please select or enter a valid Ticket ID</p>
+            <p className="font-mono-label text-sm font-bold">{t.tracker.selectTicket}</p>
           </div>
         )}
       </div>
