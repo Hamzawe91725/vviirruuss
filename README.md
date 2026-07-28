@@ -1,20 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# VIRUS For Electronics
 
-# Run and deploy your AI Studio app
+Marketing and booking site for VIRUS electronic repair and waste recycling — service overview, online repair booking, quote calculator, and ticket tracking.
 
-This contains everything you need to run your app locally.
+## Stack
 
-View your app in AI Studio: https://ai.studio/apps/f99f3503-085b-42ba-a9b2-42672cfd0145
+| Layer | Tech |
+| --- | --- |
+| UI | React 19, TypeScript |
+| Build | Vite 6 |
+| Styling | Tailwind CSS 4 |
+| Icons / motion | Lucide React, Motion |
+| AI (optional) | Google GenAI (`@google/genai`) |
 
-## Run Locally
+## Prerequisites
 
-**Prerequisites:**  Node.js
+- **Node.js 20+** (recommended; Node 18+ may work)
+- npm
 
+> On Ubuntu 20.04 / older glibc, this repo overrides Rollup to `@rollup/wasm-node` so Vite can run without native glibc 2.32+ binaries.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Run locally
+
+```bash
+# Install dependencies
+npm install
+
+# Optional: Gemini API key for AI features
+cp .env.example .env.local
+# Edit .env.local and set GEMINI_API_KEY
+
+# Start dev server (http://localhost:3000)
+npm run dev
+```
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Dev server on port **3000** (`0.0.0.0`) |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Typecheck with `tsc --noEmit` |
+| `npm run clean` | Remove `dist` and generated `server.js` |
